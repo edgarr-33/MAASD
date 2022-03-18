@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:monitoreo/src/vistas/mapa.dart';
+import 'package:monitoreo/src/vistas/map_page.dart';
 
 
 class MonitorDem extends StatefulWidget {

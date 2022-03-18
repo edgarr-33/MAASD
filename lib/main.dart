@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:monitoreo/src/vistas/MonitorDem.dart';
 import 'package:monitoreo/src/vistas/login.dart';
 
-
-
-
 void main() {
   runApp(const MyApp());
 }
@@ -21,15 +18,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      
       title: 'MVP Demo',
-      
       initialRoute: 'InitialPage',
       routes: {
         'InitialPage': (BuildContext context)=> Login(),
         'monitor': (BuildContext context)=> MonitorDem(),
-        
-        
       },
       // home: Login()
     );
