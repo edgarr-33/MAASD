@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:monitoreo/src/vistas/MonitorDem.dart';
 import 'package:monitoreo/src/vistas/login.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  runApp(const MyApp());
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -12,6 +17,7 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
 
 class _MyAppState extends State<MyApp> {
   @override

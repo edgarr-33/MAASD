@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "592792806452",
+    "firebase_url": "https://monitordem33-default-rtdb.firebaseio.com",
+    "project_id": "monitordem33",
+    "storage_bucket": "monitordem33.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592792806452:android:37235c584c26d99237d661",
+        "android_client_info": {
+          "package_name": "com.example.monitoreo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "592792806452-j9gcb8re7npmj4mbra25tbbg8646cni2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaebsSyR-zKfdlxYneLKnvfPfAGv1nrv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "592792806452-j9gcb8re7npmj4mbra25tbbg8646cni2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
