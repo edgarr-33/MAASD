@@ -5,7 +5,7 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:monitoreo/src/vistas/map_page.dart';
 
-import '../modelo/monitorDEM.dart';
+
 
 class MonitorDem extends StatefulWidget {
   MonitorDem({Key? key}) : super(key: key);
@@ -36,6 +36,7 @@ class _MonitorDemState extends State<MonitorDem> {
             final lat = json['f_latitude'];
             final long = json['f_longitude'];
             final temp = json['f_temperature'];
+            final bat = json['f_baterÃ­a'];
 
             // if(temp > 38){
             //   return const AlertDialog(
@@ -53,14 +54,13 @@ class _MonitorDemState extends State<MonitorDem> {
             // }
             
 
-            // print(mensaje);
-            // return Text(mensaje.toString());
+            ;
             return Column(
               children: [
                 Container(
                     height: height * 0.5,
                     child: Center(
-                      child: MapPage(),
+                      child: MapPage(lat,long),
                     )
                 ),
                                  Container(
@@ -73,6 +73,8 @@ class _MonitorDemState extends State<MonitorDem> {
                         Text('Longitud: ${long}',style: TextStyle(fontSize: 30)),
                         Text('Latitud: ${lat}',style: TextStyle(fontSize: 30)),
                         Text('Temperatura: ${temp}',style: TextStyle(fontSize: 30)),
+                        Text('Bateria: ${bat}',style: TextStyle(fontSize: 30)),
+
                       ],
                     ),
                                  )

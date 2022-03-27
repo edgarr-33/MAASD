@@ -8,19 +8,19 @@ class MapProvider {
   List<dynamic> addres = [];
   List<dynamic> photo = [];
 
-  // void creadMarkers( LatLng position, String id) async {
-  //   final markerId = MarkerId(markers.length.toString());
-  //   final marker = Marker(
-  //     markerId: markerId, 
-  //     position: position,
-  //     icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
-  //     consumeTapEvents: true,
-  //     // onTap: () {
-  //     //   getRoomsByMotel(id);
-  //     // }
-  //   );
-  //   markers[markerId] = marker;
-  // }
+  void creadMarkers( LatLng position) async {
+    final markerId = MarkerId(markers.length.toString());
+    final marker = Marker(
+      markerId: markerId, 
+      position: position,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      consumeTapEvents: true,
+      // onTap: () {
+      //   getRoomsByMotel(id);
+      // }
+    );
+    markers[markerId] = marker;
+  }
 
   void onMapCreated(GoogleMapController controller) {
     controller.setMapStyle(mapStyle);
