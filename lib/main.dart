@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:monitoreo/src/vistas/MonitorDem.dart';
+import 'package:monitoreo/src/vistas/alert.dart';
 import 'package:monitoreo/src/vistas/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -7,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    
   );
   runApp(MyApp());
 }
@@ -29,6 +31,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         'InitialPage': (BuildContext context)=> Login(),
         'monitor': (BuildContext context)=> MonitorDem(),
+        'alerta': (BuildContext context)=> Alerta(),
       },
       // home: Login()
     );

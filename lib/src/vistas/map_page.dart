@@ -49,9 +49,10 @@ class _MapPageState extends State<MapPage> {
           Positioned.fill(
             child: GoogleMap(
               markers: Set.of(_controller.markers.values),
-              myLocationEnabled: false,
+              myLocationEnabled: true,
               onMapCreated: _controller.onMapCreated,
               initialCameraPosition: _initialCameraPosition,
+              zoomGesturesEnabled: true,
             ),
           ),
           // Positioned(
