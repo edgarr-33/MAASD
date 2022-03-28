@@ -14,12 +14,12 @@ class _MapPageState extends State<MapPage> {
 
   final _location = LocationProvider();
   final _controller = MapProvider();
-  final _initialCameraPosition = const CameraPosition(target: LatLng(16.6227319,-93.1069952), zoom: 14);
+  final _initialCameraPosition = const CameraPosition(target: LatLng(16.7826,-93.12002), zoom: 14);
   List<LatLng> coordenadas = [];
   
   @override
   void initState() {
-    // getCoordinate();
+    getCoordinate();
     _location.getLocation();
     super.initState();
     updateCoordenadas();
@@ -72,21 +72,31 @@ class _MapPageState extends State<MapPage> {
   //   });
   // }
 
-  // void getMarkers( List<String> latitude, List<String> longitude, List<String> idMarker ) {
-  //   List lati = latitude;
-  //   List long = longitude;
-  //   List id = idMarker;
-  //   for (var i = 0; i < lati.length; i++) {
-  //     double lat = double.parse(lati[i]);
-  //     double lon = double.parse(long[i]);
-  //     coordenadas.add(LatLng(lat, lon));
-  //   }
-  //   setState(() {
-  //     for (var i = 0; i < coordenadas.length; i++) {
-  //       _controller.creadMarkers(coordenadas[i], id[i]);
-  //     }
-  //   });
-  // }
+  void getCoordinate() {
+    List<String> latitude = [];
+    List<String> longitude = [];
+    List<String> idMarker = [];
+    latitude.add('16.7826');
+    longitude.add('-93.12002');
+    idMarker.add('1');
+    getMarkers(latitude, longitude, idMarker);
+  }
+
+  void getMarkers(List<String> latitude, List<String> longitude, List<String> idMarker ) {
+    List lati = latitude;
+    List long = longitude;
+    List id = idMarker;
+    for (var i = 0; i < lati.length; i++) {
+      double lat = double.parse(lati[i]);
+      double lon = double.parse(long[i]);
+      coordenadas.add(LatLng(lat, lon));
+    }
+    setState(() {
+      for (var i = 0; i < coordenadas.length; i++) {
+        _controller.creadMarkers(coordenadas[i], id[i]);
+      }
+    });
+  }
 
   // Widget carousel() {
   //   return CarouselSlider(
