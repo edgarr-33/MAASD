@@ -8,7 +8,7 @@ class MapProvider {
   List<dynamic> addres = [];
   List<dynamic> photo = [];
 
-  void creadMarkers(LatLng position, String id) async {
+  void creadMarkers( LatLng position) async {
     final markerId = MarkerId(markers.length.toString());
     final marker = Marker(
       markerId: markerId, 

@@ -1,16 +1,31 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:monitoreo/src/providers/location_provider.dart';
 import 'package:monitoreo/src/providers/map_provider.dart';
 
 class MapPage extends StatefulWidget {
+  double long;
+  double lat;
+
+  MapPage(this.lat, this.long, {Key? key}) : super(key: key);
+
+
+
   @override
-  _MapPageState createState() => _MapPageState();
+  _MapPageState createState() => _MapPageState(lat,long);
 }
 
 class _MapPageState extends State<MapPage> {
-  double latitud = 0.0;
-  double longitud = 0.0;
+    double long;
+  double lat;
+
+  _MapPageState(this.lat, this.long);
+  
+
+  
+  // double latitud = 16.7826;
+  // double longitud = -93.12002;
 
   final _location = LocationProvider();
   final _controller = MapProvider();
@@ -19,8 +34,8 @@ class _MapPageState extends State<MapPage> {
   
   @override
   void initState() {
-    getCoordinate();
-    _location.getLocation();
+    getMarkers(lat,long);
+    // _location.getLocation();
     super.initState();
     updateCoordenadas();
   }
@@ -37,6 +52,7 @@ class _MapPageState extends State<MapPage> {
               myLocationEnabled: true,
               onMapCreated: _controller.onMapCreated,
               initialCameraPosition: _initialCameraPosition,
+              zoomGesturesEnabled: true,
             ),
           ),
           // Positioned(
@@ -51,6 +67,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void updateCoordenadas() {
+ 
     print(_location.locationData);
     print('BIENVENIDOS');
     // setState(() {
@@ -72,29 +89,14 @@ class _MapPageState extends State<MapPage> {
   //   });
   // }
 
-  void getCoordinate() {
-    List<String> latitude = [];
-    List<String> longitude = [];
-    List<String> idMarker = [];
-    latitude.add('16.7826');
-    longitude.add('-93.12002');
-    idMarker.add('1');
-    getMarkers(latitude, longitude, idMarker);
-  }
+  void getMarkers( double latitude, double longitude ) async{
+    
 
-  void getMarkers(List<String> latitude, List<String> longitude, List<String> idMarker ) {
-    List lati = latitude;
-    List long = longitude;
-    List id = idMarker;
-    for (var i = 0; i < lati.length; i++) {
-      double lat = double.parse(lati[i]);
-      double lon = double.parse(long[i]);
-      coordenadas.add(LatLng(lat, lon));
-    }
+    
     setState(() {
-      for (var i = 0; i < coordenadas.length; i++) {
-        _controller.creadMarkers(coordenadas[i], id[i]);
-      }
+
+        _controller.creadMarkers(LatLng(latitude, longitude));
+      
     });
   }
 
