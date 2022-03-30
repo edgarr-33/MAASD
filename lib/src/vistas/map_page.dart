@@ -17,11 +17,12 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-    double long;
-  double lat;
+
 
   _MapPageState(this.lat, this.long);
-  
+       double long;
+  double lat;
+  //  print(this.lat);
 
   
   // double latitud = 16.7826;
@@ -34,8 +35,9 @@ class _MapPageState extends State<MapPage> {
   
   @override
   void initState() {
+    print(lat);
     getMarkers(lat,long);
-    // _location.getLocation();
+    _location.getLocation();
     super.initState();
     updateCoordenadas();
   }
@@ -52,7 +54,7 @@ class _MapPageState extends State<MapPage> {
               myLocationEnabled: true,
               onMapCreated: _controller.onMapCreated,
               initialCameraPosition: _initialCameraPosition,
-              zoomGesturesEnabled: true,
+              // zoomGesturesEnabled: true,
             ),
           ),
           // Positioned(
@@ -90,9 +92,7 @@ class _MapPageState extends State<MapPage> {
   // }
 
   void getMarkers( double latitude, double longitude ) async{
-    
-
-    
+  
     setState(() {
 
         _controller.creadMarkers(LatLng(latitude, longitude));
