@@ -10,33 +10,29 @@ class MapPage extends StatefulWidget {
 
   MapPage(this.lat, this.long, {Key? key}) : super(key: key);
 
-
-
   @override
-  _MapPageState createState() => _MapPageState(lat,long);
+  _MapPageState createState() => _MapPageState(lat, long);
 }
 
 class _MapPageState extends State<MapPage> {
-
-
   _MapPageState(this.lat, this.long);
-       double long;
+  double long;
   double lat;
   //  print(this.lat);
 
-  
   // double latitud = 16.7826;
   // double longitud = -93.12002;
 
   final _location = LocationProvider();
   final _controller = MapProvider();
-  final _initialCameraPosition = const CameraPosition(target: LatLng(16.7826,-93.12002), zoom: 14);
+  final _initialCameraPosition =
+      const CameraPosition(target: LatLng(16.7826, -93.12002), zoom: 16);
   List<LatLng> coordenadas = [];
-  
+
   @override
   void initState() {
     print(lat);
-    getMarkers(lat,long);
+    getMarkers(lat, long);
     _location.getLocation();
     super.initState();
     updateCoordenadas();
@@ -44,7 +40,6 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: Stack(
         children: [
@@ -64,12 +59,11 @@ class _MapPageState extends State<MapPage> {
           //   child: carousel()
           // )
         ],
-      )
+      ),
     );
   }
 
   void updateCoordenadas() {
- 
     print(_location.locationData);
     print('BIENVENIDOS');
     // setState(() {
@@ -91,12 +85,10 @@ class _MapPageState extends State<MapPage> {
   //   });
   // }
 
-  void getMarkers( double latitude, double longitude ) async{
-  
+  void getMarkers(double latitude, double longitude) async {
     setState(() {
-
-        _controller.creadMarkers(LatLng(latitude, longitude));
-      
+      print("si activa");
+      _controller.creadMarkers(LatLng(latitude, longitude));
     });
   }
 
@@ -106,12 +98,12 @@ class _MapPageState extends State<MapPage> {
   //       // height: size.init(context)[0] * 65,
   //       enlargeCenterPage: true,
   //       enableInfiniteScroll: false,
-  //       // viewportFraction: 0.8 
+  //       // viewportFraction: 0.8
   //     ),
   //     items: listCards(),
   //   );
   // }
-  
+
   // List<Widget> listCards() {
   //   List<Widget> cards = [];
   //   List<String> name = ['Habitacion sencilla', 'Habitacion especial'];
@@ -146,7 +138,7 @@ class _MapPageState extends State<MapPage> {
   //       child: Column(
   //         children: <Widget> [
   //           AspectRatio(
-  //             aspectRatio: 8 / 3, 
+  //             aspectRatio: 8 / 3,
   //             child: Container(
   //               decoration: new BoxDecoration(
   //                 image: new DecorationImage(
