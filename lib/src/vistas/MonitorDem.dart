@@ -24,7 +24,7 @@ class _MonitorDemState extends State<MonitorDem> {
   final _location = LocationProvider();
   final _controller = MapProvider();
   final _initialCameraPosition =
-      const CameraPosition(target: LatLng(16.61774, -93.0787998), zoom: 16);
+  const CameraPosition(target: LatLng(16.615616682740654, -93.09023874839484), zoom: 16);
   @override
   void initState() {
     _location.getLocation();
@@ -42,186 +42,141 @@ class _MonitorDemState extends State<MonitorDem> {
         title: const Center(child: Text('MonitorDem')),
       ),
       body: Container(
+        color: null,
         child: FirebaseAnimatedList(
-            query: FirebaseDatabase.instance.ref("/"),
-            itemBuilder: (_, snapshot, __, ____) {
-              // print(snapshot.value);
-              final json = snapshot.value as Map<dynamic, dynamic>;
-              double lat1 = 16.782633382832646;
-              double long1 = -93.12002440061053;
-              double lat2 = 16.78256404774343;
-              double long2 = -93.1200512226987;
-              double lat3 = 16.782598715291208;
-              double long3 = -93.1199519809725;
-              double lat4 = 16.78253965205788;
-              double long4 = -93.11998148526946;
+          query: FirebaseDatabase.instance.ref("/"),
+          itemBuilder: (_, snapshot, __, ____) {
+            // print(snapshot.value);
+            final json = snapshot.value as Map<dynamic, dynamic>;
+            // , , ,, 
+            // double lat1a = 16.622040052123793;
+            // double long1a = -93.10175065994065;
+            // double lat2a = 16.62201113819912;
+            // double long2a = -93.10164001881802;
+            // double lat3a = 16.621949455145256;
+            // double long3a =  -93.10177681147871;
+            // double lat4a = 16.621916686014835;
+            // double long4a =-93.10166818201287;
+            // ,
 
-              final frec = json['f_frecuencia'];
-              double lat = json['f_latitude'];
-              double long = json['f_longitude'];
-              final temp = json['f_temperature'];
-              final bat = json['f_baterÃ­a'];
+            double lat1d = 16.61631385185811;
+            double long1d = -93.09100900492535;
+            double lat2d =16.616328407550533;
+            double long2d =-93.09038494867774;
+            double lat3d = 16.616117349902364;
+            double long3d =  -93.09100520742285;
+            double lat4d = 16.616134331560794;
+            double long4d =-93.09039507535113;
 
-              if (temp > 38) {
-                return const AlertDialog(
-                  title: Text('temperatura mas del limite'),
-                );
-              }
+            final frec = json['f_frecuencia'];
+            double lat = json['f_latitude'];
+            double long = json['f_longitude'];
+            final temp = json['f_temperature'];
+            final bat = json['f_baterÃ­a'];
 
-              if (temp < 10) {
-                return const AlertDialog(
-                  title: Text('temperatura menos del limite'),
-                );
-              }
-              print(lat);
-              getMarkers(lat, long);
+            double tempAux = temp -3.0;
+            int frecInt = frec.toInt();
 
-              // if(lat>lat1 || lat < lat2 || lat < lat3|| lat < lat4  || long < long1 || long < long2 || long > long3 || long >long4){
-              //   // print(lat);
-              //   // print(lat1-lat);
-              //   // print(lat2-lat);
-              //   // print(lat3-lat);
-              //   // print(lat4-lat);
+            // print('latitud $lat');
+            getMarkers(lat, long);
 
-              //   final DateTime now = DateTime.now();
+            if(lat>lat1d|| lat > lat2d || lat < lat3d|| lat < lat4d|| long < long1d|| long > long2d|| long < long3d || long >long4d ) {
+            // if(lat >lat1d|| lat > lat2d|| lat > lat3d|| lat > lat4d|| long < long1d|| long < long2d|| long < long3d|| long <long4d ){ 
+            // if(lat>lat1d|| lat > lat2d || lat > lat3d|| lat > lat4d|| long < long1d|| long > long2d|| long < long3d|| long >long4d){
 
-              //   return  AlertDialog(
+   
+              // print(lat);
+              // print(lat1-lat);
+              // print(lat2-lat);
+              // print(lat3-lat);
+              // print(lat4-lat); 
 
-              //     title: Text('la persona salio del limite el dia y hora  : ${now}'),
-              //     // content: Text('data'),
+              final DateTime now = DateTime.now();
+              return  AlertDialog(
+                title: Text('la persona salio del limite el dia y hora  : ${now}'),
+                // content: Text('data'),
+              );
+            }
+            if (tempAux > 45) {
+              return const AlertDialog(
+                title: Text('Temperatura mas del limite'),
+              );
+            }
 
-              //   );
-              // }
-              // if(bat < 0.0001){
-              //   showDialog(
-              //     context: context,
-              //   builder: (context)=> const AlertDialog(
-              //     title: Text('bateria baja'),
 
-              //   )
-              //   );
-              // }
+            // if(bat < 0.0001){
+            //   showDialog(
+            //     context: context,
+            //   builder: (context)=> const AlertDialog(
+            //     title: Text('bateria baja'),
 
-              return Column(
-                children: [
-                  Container(
-                    color: Colors.transparent,
-                    // width: double.infinity,
-                    height: height * 0.3,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: GoogleMap(
-                            markers: Set.of(_controller.markers.values),
-                            myLocationEnabled: true,
-                            onMapCreated: _controller.onMapCreated,
-                            initialCameraPosition: _initialCameraPosition,
-                            // zoomGesturesEnabled: true,
-                          ),
+            //   )
+            //   );
+            // }
+
+            return Column(
+              children: [
+                Container(
+                  color: Colors.transparent,
+                  // width: double.infinity,
+                  height: height * 0.7,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: GoogleMap(
+                          markers: Set.of(_controller.markers.values),
+                          myLocationEnabled: true,
+                          onMapCreated: _controller.onMapCreated,
+                          initialCameraPosition: _initialCameraPosition,
+                          // zoomGesturesEnabled: true,
                         ),
-                        // Positioned(
-                        //   left: 0,
-                        //   right: 0,
-                        //   bottom: 20,
-                        //   child: carousel()
-                        // )
-                      ],
-                    ),
-                    //MapPage(lat,long),
+                      ),
+                    ],
                   ),
-                  Container(
-                    // color: Colors.transparent,
-                    // width: double.infinity,
-                    height: height * 0.3,
-                    // color: Colors.yellow[200],
+                ),
+                Container(
+                  color: Colors.transparent,
+                  width: double.infinity,
+                  // height: height * 0.3,
+                  height: 120,
+                  // color: Colors.yellow[200],
+                  child: SingleChildScrollView(
                     child: Column(
                       children: [
                         const Padding(padding: EdgeInsets.only(top: 30)),
                         Text(
                           'Frecuencia: ${frec}',
-                          style: TextStyle(fontSize: 30),
+                          style: const TextStyle(
+                            fontSize: 30
+                          ),
                         ),
-                        Text('Temperatura: ${temp}',
-                            style: TextStyle(fontSize: 30)),
-                        Text('Bateria: ${bat}', style: TextStyle(fontSize: 30)),
+                        Text(
+                          'Temperatura: ${temp}',
+                          style: const TextStyle(
+                            fontSize: 30
+                          )
+                        ),
+                        // Text('Bateria: ${bat}', style: TextStyle(fontSize: 30)),
                       ],
                     ),
-                  )
-                ],
-              );
-            }),
+                  ),
+                )
+              ],
+            );
+          }
+        ),
       ),
-
-      // body: StreamBuilder<DatabaseEvent>(
-      //     stream: MonitorDEM().getDatas(),
-
-      //     builder: (context, snapshot) {
-      //       if (snapshot.hasError) {
-      //         return const SnackBar(
-      //             content: Text('Error inicializando Firebase'));
-      //       } else if (snapshot.connectionState == ConnectionState.done) {
-      //         print('connection state DONE');
-      //         print(snapshot.data);
-
-      //         // print(snapshot.data);
-
-      //         // String stringVar = snapshot.data.toString();
-      //         // List<String> lista =[];
-      //         // List<double> listaDouble =[];
-
-      //         // for (var i = 0; i < stringVar.length; i++) {
-      //         //   if(stringVar[i]=="["||stringVar[i]==' '){
-      //         //     String listvar ="";
-      //         //     for (var j = i+1; j < stringVar.length; j++) {
-      //         //       if(stringVar[j]=="," || stringVar[j]==']'){
-      //         //         lista.add(listvar.replaceAll(RegExp(r' ') , ''));
-      //         //         break;
-      //         //       }
-      //         //       listvar+=stringVar[j];
-
-      //         //     }
-      //         //   }
-
-      //         // }
-      //         // for (var i = 0; i < lista.length; i++) {
-      //         //       listaDouble.add(double.parse(lista[i])) ;
-      //         // }
-      //         // print('-------------------------');
-      //         // print(listaDouble);
-
-      //         return Column(
-      //           children: [
-      //             // Container(
-      //             //   height: height*0.5,
-      //             //   child: Center(child: MapPage(lat, long),)
-      //             // ),
-      //             Container(
-      //               height: height * 0.3,
-      //               // color: Colors.yellow[200],
-      //               child: Column(
-      //                 children: [
-      //                   const Padding(padding: EdgeInsets.only(top: 30)),
-      //                   // Text('Frecuencia: ${listaDouble[0]}',style: TextStyle(fontSize: 30),),
-      //                   // Text('Longitud: ${listaDouble[1]}',style: TextStyle(fontSize: 30)),
-      //                   // Text('Latitud: ${listaDouble[2]}',style: TextStyle(fontSize: 30)),
-      //                   // Text('Frecuencia: ${listaDouble[3]}',style: TextStyle(fontSize: 30)),
-      //                 ],
-      //               ),
-      //             )
-      //           ],
-      //         );
-      //       }
-      //       return const CircularProgressIndicator();
-      //     }),
     );
   }
 
   void getMarkers(double latitude, double longitude) {
     (CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(latitude, longitude), zoom: 16)));
-
+      CameraPosition(
+        target: LatLng(latitude, longitude),
+        zoom: 16
+      )
+    ));
     _controller.markers.clear();
-
     _controller.creadMarkers(LatLng(latitude, longitude));
   }
 }

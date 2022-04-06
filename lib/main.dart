@@ -3,6 +3,7 @@ import 'package:monitoreo/src/vistas/MonitorDem.dart';
 import 'package:monitoreo/src/vistas/alert.dart';
 import 'package:monitoreo/src/vistas/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:monitoreo/src/vistas/splash.dart';
 
 
 void main() async {
@@ -32,6 +33,7 @@ class _MyAppState extends State<MyApp> {
         'InitialPage': (BuildContext context)=> Login(),
         'monitor': (BuildContext context)=> MonitorDem(),
         'alerta': (BuildContext context)=> Alerta(),
+        'splash': (BuildContext context) => SplashView(),
       },
       // home: Login()
     );
