@@ -50,16 +50,7 @@ class _MonitorDemState extends State<MonitorDem> {
             itemBuilder: (_, snapshot, __, ____) {
               // print(snapshot.value);
               final json = snapshot.value as Map<dynamic, dynamic>;
-              // , , ,,
-              // double lat1a = 16.622040052123793;
-              // double long1a = -93.10175065994065;
-              // double lat2a = 16.62201113819912;
-              // double long2a = -93.10164001881802;
-              // double lat3a = 16.621949455145256;
-              // double long3a =  -93.10177681147871;
-              // double lat4a = 16.621916686014835;
-              // double long4a =-93.10166818201287;
-              // ,
+            
 
               double lat1d = 16.61631385185811;
               double long1d = -93.09100900492535;
@@ -79,7 +70,6 @@ class _MonitorDemState extends State<MonitorDem> {
               double tempAux = temp - 3.0;
               int frecInt = frec.toInt();
 
-              // print('latitud $lat');
               getMarkers(lat, long);
               setPolygon(
                   1,
