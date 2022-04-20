@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -28,6 +30,7 @@ class _MapPageState extends State<MapPage> {
   final _initialCameraPosition =
       const CameraPosition(target: LatLng(16.7826, -93.12002), zoom: 16);
   List<LatLng> coordenadas = [];
+  final Set<Polygon> _polygons = HashSet<Polygon>();
 
   @override
   void initState() {
@@ -90,6 +93,16 @@ class _MapPageState extends State<MapPage> {
       print("si activa");
       _controller.creadMarkers(LatLng(latitude, longitude));
     });
+  }
+  void setPolygon(int id,double lat,double long,double lat2,double long2,) {
+    final String polygonIdVal = 'polygon_id_$id';
+    _polygons.add(Polygon(
+    polygonId: PolygonId(polygonIdVal),
+    points: [LatLng(lat,long),LatLng(lat2,long2)],
+    strokeWidth: 2,
+    strokeColor: Colors.yellow,
+    fillColor: Colors.yellow.withOpacity (0.15),
+    )); // Polygon
   }
 
   // Widget carousel() {
