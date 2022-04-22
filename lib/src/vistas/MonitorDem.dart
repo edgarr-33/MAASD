@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_utils/utils/poly_utils.dart';
 import 'package:monitoreo/src/vistas/map_page.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -48,132 +51,102 @@ class _MonitorDemState extends State<MonitorDem> {
       body: Container(
         color: null,
         child: FirebaseAnimatedList(
-          query: FirebaseDatabase.instance.ref("/"),
-          itemBuilder: (_, snapshot, __, ____) {
-            // print(snapshot.value);
-            final json = snapshot.value as Map<dynamic, dynamic>;
-            // , , ,,
-            // double lat1a = 16.622040052123793;
-            // double long1a = -93.10175065994065;
-            // double lat2a = 16.62201113819912;
-            // double long2a = -93.10164001881802;
-            // double lat3a = 16.621949455145256;
-            // double long3a =  -93.10177681147871;
-            // double lat4a = 16.621916686014835;
-            // double long4a =-93.10166818201287;
-            
-            double lat1d = 16.61631385185811;
-            double long1d = -93.09100900492535;
-            double lat2d = 16.616328407550533;
-            double long2d = -93.09038494867774;
-            double lat3d = 16.616117349902364;
-            double long3d = -93.09100520742285;
-            double lat4d = 16.616134331560794;
-            double long4d = -93.09039507535113;
+            query: FirebaseDatabase.instance.ref("/"),
+            itemBuilder: (_, snapshot, __, ____) {
+       
+              final json = snapshot.value as Map<dynamic, dynamic>;
+           
 
-            final frec = json['f_frecuencia'];
-            double lat = json['f_latitude'];
-            double long = json['f_longitude'];
-            final temp = json['f_temperature'];
-            final bat = json['f_baterÃ­a'];
+              final frec = json['f_frecuencia'];
+              double lat = json['f_latitude'];
+              double long = json['f_longitude'];
+              final temp = json['f_temperature'];
+              final bat = json['f_baterÃ­a'];
 
-            double tempAux = temp - 3.0;
-            int frecInt = frec.toInt();
+              double tempAux = temp - 3.0;
+              int frecInt = frec.toInt();
 
-            // print('latitud $lat');
-            getMarkers(lat, long);
-            setPolygon(
-                1,
-                16.61613226251756,
-                -93.0910093791682,
-                16.61633480425037,
-                -93.09101043401931,
-                16.616344343149503,
-                -93.09038424064279,
-                16.616144719943097,
-                -93.09039326897023
-            );
+              getMarkers(lat, long);
+              setPolygon(
 
-            if (lat > lat1d || lat > lat2d || lat < lat3d || lat < lat4d ||
-                long < long1d || long > long2d || long < long3d || long > long4d) {
-              // if(lat >lat1d|| lat > lat2d|| lat > lat3d|| lat > lat4d|| long < long1d|| long < long2d|| long < long3d|| long <long4d ){
-              // if(lat>lat1d|| lat > lat2d || lat > lat3d|| lat > lat4d|| long < long1d|| long > long2d|| long < long3d|| long >long4d){
-              // print(lat);
-              // print(lat1-lat);
-              // print(lat2-lat);
-              // print(lat3-lat);
-              // print(lat4-lat);
-              final DateTime now = DateTime.now();
-              return AlertDialog(
-                title: Text('la persona salio del limite el dia y hora  : ${now}'),
-                // content: Text('data'),
-              );
-            }
+                //universidad
+                  // 1,
+                  // 16.61613226251756,-93.0910093791682,
+                  // 16.61633480425037,-93.09101043401931,
+                  // 16.616344343149503,-93.09038424064279,
+                  // 16.616144719943097,-93.09039326897023);
 
-            if (tempAux > 45) {
-              return const AlertDialog(
-                title: Text('Temperatura mas del limite'),
-              );
-            }
+                // casa random
+                  1,
+                16.61712472632354, -93.09428488218826,
+                16.61709324146582, -93.0942044159187,
+                16.617011637830938, -93.09423660242652,
+                16.617041837605374, -93.09431773924834);
 
-            // if(bat < 0.0001){
-            //   showDialog(
-            //     context: context,
-            //   builder: (context)=> const AlertDialog(
-            //     title: Text('bateria baja'),
+              Point from = Point(lat, long);
+              List<Point> polygon = [
+                Point(16.61712472632354,-93.09428488218826),
+                Point( 16.61709324146582, -93.0942044159187),
+                Point(16.617011637830938, -93.09423660242652),
+                Point(16.617041837605374, -93.09431773924834),
+              ];
+              bool contains = PolyUtils.containsLocationPoly(from, polygon);
+              
+              if (!contains) {
+                final DateTime now = DateTime.now();
+                return AlertDialog(
+                  title: Text(
+                      'la persona salio del limite el dia y hora  : ${now}'),
+                );
+              }
+              if (tempAux > 38) {
+                return const AlertDialog(
+                  title: Text('Temperatura mas del limite'),
+                );
+              }
 
-            //   )
-            //   );
-            // }
-
-            return Column(
-              children: [
-                Container(
-                  color: Colors.transparent,
-                  width: double.infinity,
-                  height: height * 0.7,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: GoogleMap(
-                          markers: Set.of(_controller.markers.values),
-                          myLocationEnabled: true,
-                          onMapCreated: _controller.onMapCreated,
-                          initialCameraPosition: _initialCameraPosition,
-                          polygons: _polygons,
-                          // zoomGesturesEnabled: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.transparent,
-                  width: double.infinity,
-                  // height: height * 0.3,
-                  height: 120,
-                  // color: Colors.yellow[200],
-                  child: SingleChildScrollView(
-                    child: Column(
+             
+              return Column(
+                children: [
+                  Container(
+                    color: Colors.transparent,
+                    height: height * 0.7,
+                    child: Stack(
                       children: [
-                        const Padding(padding: EdgeInsets.only(top: 30)),
-                        Text(
-                          'Frecuencia: ${frec}',
-                          style: const TextStyle(fontSize: 30),
-                        ),
-                        Text(
-                          'Temperatura: ${temp}',
-                          style: const TextStyle(fontSize: 30)
+                        Positioned.fill(
+                          child: GoogleMap(
+                            markers: Set.of(_controller.markers.values),
+                            myLocationEnabled: true,
+                            onMapCreated: _controller.onMapCreated,
+                            initialCameraPosition: _initialCameraPosition,
+                            polygons: _polygons,
+                          ),
                         ),
                         // Text('Bateria: ${bat}', style: TextStyle(fontSize: 30)),
                       ],
                     ),
                   ),
-                )
-              ],
-            );
-          }
-        ),
+                  Container(
+                    color: Colors.transparent,
+                    width: double.infinity,
+                    height: 120,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const Padding(padding: EdgeInsets.only(top: 30)),
+                          Text(
+                            'Frecuencia: ${frec}',
+                            style: const TextStyle(fontSize: 30),
+                          ),
+                          Text('Temperatura: ${temp}',
+                              style: const TextStyle(fontSize: 30)),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              );
+            }),
       ),
     );
   }
