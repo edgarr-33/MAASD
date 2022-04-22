@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:monitoreo/src/vistas/MonitorDem.dart';
 import 'package:monitoreo/src/vistas/alert.dart';
+import 'package:monitoreo/src/vistas/delimitArea.dart';
 import 'package:monitoreo/src/vistas/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:monitoreo/src/vistas/register.dart';
 import 'package:monitoreo/src/vistas/splash.dart';
 
 void main() async {
@@ -24,12 +26,14 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MVP Demo',
-      initialRoute: 'InitialPage',
+      initialRoute: 'register',
       routes: {
-        'InitialPage': (BuildContext context)=> Login(),
-        'monitor': (BuildContext context)=> MonitorDem(),
-        'alerta': (BuildContext context)=> Alerta(),
-        'splash': (BuildContext context) => SplashView(),
+        'InitialPage': (BuildContext context)=> const Login(),
+        'monitor': (BuildContext context)=> const MonitorDem(),
+        'alerta': (BuildContext context)=> const Alerta(),
+        'splash': (BuildContext context) => const SplashView(),
+        'register': (BuildContext context) => const RegisterView(),
+        'delimit': (BuildContext context) => const DelimitAreaView(),
       },
       // home: Login()
     );
