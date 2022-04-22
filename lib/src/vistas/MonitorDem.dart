@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_utils/utils/poly_utils.dart';
 import 'package:monitoreo/src/vistas/map_page.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -91,29 +93,20 @@ class _MonitorDemState extends State<MonitorDem> {
                   -93.09038424064279,
                   16.616144719943097,
                   -93.09039326897023);
-
-              if (lat > lat1d ||
-                  lat > lat2d ||
-                  lat < lat3d ||
-                  lat < lat4d ||
-                  long < long1d ||
-                  long > long2d ||
-                  long < long3d ||
-                  long > long4d) {
-                // if(lat >lat1d|| lat > lat2d|| lat > lat3d|| lat > lat4d|| long < long1d|| long < long2d|| long < long3d|| long <long4d ){
-                // if(lat>lat1d|| lat > lat2d || lat > lat3d|| lat > lat4d|| long < long1d|| long > long2d|| long < long3d|| long >long4d){
-
-                // print(lat);
-                // print(lat1-lat);
-                // print(lat2-lat);
-                // print(lat3-lat);
-                // print(lat4-lat);
-
+              Point from = Point(lat, long);
+              List<Point> polygon = [
+                Point(16.61613226251756, -93.0910093791682),
+                Point(16.61633480425037, -93.09101043401931),
+                Point(16.616344343149503, -93.09038424064279),
+                Point(16.616144719943097, -93.09039326897023),
+              ];
+              bool contains = PolyUtils.containsLocationPoly(from, polygon);
+              print(!contains);
+              if (!contains) {
                 final DateTime now = DateTime.now();
                 return AlertDialog(
                   title: Text(
                       'la persona salio del limite el dia y hora  : ${now}'),
-                  // content: Text('data'),
                 );
               }
               if (tempAux > 45) {
