@@ -230,7 +230,7 @@ class _RegisterViewState extends State<RegisterView> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, 'iniciarSesion');
+              Navigator.pushNamed(context, 'InitialPage');
             },
             child: const Text(
               'Iniciar Sesión',

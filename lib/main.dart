@@ -29,11 +29,11 @@ class _MyAppState extends State<MyApp> {
       initialRoute: 'register',
       routes: {
         'InitialPage': (BuildContext context)=> const Login(),
-        'monitor': (BuildContext context)=> const MonitorDem(),
-        'alerta': (BuildContext context)=> const Alerta(),
-        'splash': (BuildContext context) => const SplashView(),
         'register': (BuildContext context) => const RegisterView(),
         'delimit': (BuildContext context) => const DelimitAreaView(),
+        'splash': (BuildContext context) => const SplashView(),
+        'monitor': (BuildContext context)=> const MonitorDem(),
+        'alerta': (BuildContext context)=> const Alerta(),
       },
       // home: Login()
     );
