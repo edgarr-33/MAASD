@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:monitoreo/src/vistas/MonitorDem.dart';
 import 'package:monitoreo/src/vistas/alert.dart';
+import 'package:monitoreo/src/vistas/continuar.dart';
 import 'package:monitoreo/src/vistas/delimitArea.dart';
 import 'package:monitoreo/src/vistas/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:monitoreo/src/vistas/loginAuth.dart';
+import 'package:monitoreo/src/vistas/newMonitor.dart';
 import 'package:monitoreo/src/vistas/register.dart';
 import 'package:monitoreo/src/vistas/splash.dart';
 
@@ -21,21 +24,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MVP Demo',
-      initialRoute: 'register',
+      initialRoute: 'InitialPage',
       routes: {
         'InitialPage': (BuildContext context)=> const Login(),
+        'loginPage': (BuildContext context)=>  loginPage(),
         'register': (BuildContext context) => const RegisterView(),
         'delimit': (BuildContext context) => const DelimitAreaView(),
         'splash': (BuildContext context) => const SplashView(),
         'monitor': (BuildContext context)=> const MonitorDem(),
         'alerta': (BuildContext context)=> const Alerta(),
+        'continual': (BuildContext context)=>  Continuar(),
+        'mon': (BuildContext context)=>  NuevoMonitor(),
       },
-      // home: Login()
+    
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
@@ -21,9 +22,40 @@ class _SplashViewState extends State<SplashView> {
     _loadImage('assets/icono.png');
     _toOnBording();
   }
+ List<double> latList=[];
+  List<double> longList=[];
 
   @override
   Widget build(BuildContext context) {
+  final arguments = ModalRoute.of(context)!.settings.arguments as Map;
+  String identificador = arguments['uid'];
+
+
+  Future<void> getUserById(String identificador) async {
+    List<dynamic> coords = [];
+    
+    
+    await FirebaseFirestore.instance.collection('users').get().then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        if (doc.id == identificador) {
+          // print(doc['coords']);
+          coords.add(doc['coords']);
+        }
+      });
+    });
+    // print('...............................');
+    // print(coords);
+    for (var i = 0; i < coords[0].length; i++) {
+      
+      latList.add(coords[0][i].latitude);
+      longList.add(coords[0][i].longitude);
+    }
+  }
+    getUserById(identificador);
+
+
+
+
     return Scaffold(
       body: Center(
         child: SizedBox(
@@ -38,7 +70,11 @@ class _SplashViewState extends State<SplashView> {
   }
 
   _toOnBording() async {
+    // print(object)
+    print(latList);
+    print(longList);
     await Future.delayed(const Duration(milliseconds: 5000), (){}); //5
+    
     Navigator.pushReplacement(
       context, MaterialPageRoute(
         builder: (context) => MonitorDem()

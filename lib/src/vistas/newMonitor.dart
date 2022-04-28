@@ -1,27 +1,28 @@
 import 'dart:collection';
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_utils/utils/poly_utils.dart';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:monitoreo/src/providers/location_provider.dart';
-import 'package:monitoreo/src/providers/map_provider.dart';
+import '../providers/location_provider.dart';
+import '../providers/map_provider.dart';
 
-class MonitorDem extends StatefulWidget {
-  const MonitorDem({Key? key}) : super(key: key);
+
+
+class NuevoMonitor extends StatefulWidget {
+
+  const NuevoMonitor({Key? key}) : super(key: key);
 
   @override
-  State<MonitorDem> createState() => _MonitorDemState();
+  State<NuevoMonitor> createState() => _NuevoMonitorState();
 }
 
-class _MonitorDemState extends State<MonitorDem> {
-
-  final _location = LocationProvider();
+class _NuevoMonitorState extends State<NuevoMonitor> {
+    final _location = LocationProvider();
   final _controller = MapProvider();
   final _initialCameraPosition = const CameraPosition(target: LatLng(16.615616682740654, -93.09023874839484), zoom: 16);
   final Set<Polygon> _polygons = HashSet<Polygon>();
@@ -31,50 +32,55 @@ class _MonitorDemState extends State<MonitorDem> {
     _location.getLocation();
     super.initState();
   }
-
+  // final String documentId;
   @override
   Widget build(BuildContext context) {
   final arguments = ModalRoute.of(context)!.settings.arguments as Map;
   String identificador = arguments['uid'];
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
+    return FutureBuilder<DocumentSnapshot>(
+      future: users.doc(identificador).get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
 
-  
-Future<void> getUserById(String identificador) async {
-    List<dynamic> coords = [];
-    
-       List<double> latList=[];
-          List<double> longList=[];
-    await FirebaseFirestore.instance.collection('users').get().then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        if (doc.id == identificador) {
-          // print(doc['coords']);
-          coords.add(doc['coords']);
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
         }
-      });
-    });
-    // print('...............................');
-    // print(coords);
-    for (var i = 0; i < coords[0].length; i++) {
-      
-      latList.add(coords[0][i].latitude);
-      longList.add(coords[0][i].longitude);
-    }
-  }
 
-  getUserById(identificador);
+        if (snapshot.hasData && !snapshot.data!.exists) {
+          return Text("Document does not exist");
+        }
 
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: const Color(0xffFFC9D9),
-      appBar: AppBar(
-        backgroundColor: const Color(0xff9F7FB1),
-        title: const Center(
-          child: Text('MonitorDem')
-        ),
-        
-      ),
-      body: Container(
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+          List<dynamic> coords = [];
+          List<double> latList=[];
+          List<double> longList=[];
+
+          coords.add(data['coords']);
+          // print(coords);
+
+          for (var i = 0; i < coords[0].length; i++) {
+            latList.add(coords[0][i].latitude);
+            longList.add(coords[0][i].longitude);
+          }
+
+          // print(latList);
+          // print(longList);
+
+
+          double width = MediaQuery.of(context).size.width;
+          double height = MediaQuery.of(context).size.height;
+          return Scaffold(
+            backgroundColor: const Color(0xffFFC9D9),
+            appBar: AppBar(
+              backgroundColor: const Color(0xff9F7FB1),
+              title: const Center(
+                child: Text('MonitorDem')
+              ),
+            ),
+            body: Container(
         color: null,
         child: FirebaseAnimatedList(
           query: FirebaseDatabase.instance.ref("/"),
@@ -89,22 +95,23 @@ Future<void> getUserById(String identificador) async {
             int frecInt = frec.toInt();
 
             getMarkers(lat, long);
-           
+            print(latList);
+            print(longList);
 
             setPolygon(
               1,
-              16.61613226251756,-93.0910093791682,
-              16.61633480425037,-93.09101043401931,
-              16.616344343149503,-93.09038424064279,
-              16.616144719943097,-93.09039326897023);
+              latList[0],longList[0],
+              latList[1],longList[1],
+              latList[2],longList[2],
+              latList[3],longList[3]);
             
 
             Point from = Point(lat, long);
             List<Point> polygon = [
-              const Point( 16.61613226251756,-93.0910093791682),
-              const Point(   16.61633480425037,-93.09101043401931),
-              const Point( 16.616344343149503,-93.09038424064279),
-              const Point(16.616144719943097,-93.09039326897023),
+              Point(  latList[0],longList[0]),
+              Point(  latList[1],longList[1]),
+              Point(  latList[2],longList[2]),
+              Point(  latList[3],longList[3]),
             ];
             // Alerta de fuera del área
             bool contains = PolyUtils.containsLocationPoly(from, polygon);
@@ -221,10 +228,18 @@ Future<void> getUserById(String identificador) async {
           }
         ),
       ),
-    );
-  }
 
-  void getMarkers(double latitude, double longitude) {
+          );
+
+        }
+ 
+        return Text("loading");
+      },
+      
+    );
+    
+  }
+   void getMarkers(double latitude, double longitude) {
     CameraUpdate.newCameraPosition(
       CameraPosition(
         target: LatLng(latitude, longitude),
@@ -234,8 +249,7 @@ Future<void> getUserById(String identificador) async {
     _controller.markers.clear();
     _controller.creadMarkers(LatLng(latitude, longitude));
   }
-
-  void setPolygon(int id, double lat, double long, double lat2, double long2, double lat3, double long3, double lat4, double long4,) {
+    void setPolygon(int id, double lat, double long, double lat2, double long2, double lat3, double long3, double lat4, double long4,) {
     final String polygonIdVal = 'polygon_id_$id';
     _polygons.add(Polygon(
       polygonId: PolygonId(polygonIdVal),
