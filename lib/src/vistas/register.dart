@@ -22,6 +22,10 @@ class _RegisterViewState extends State<RegisterView> {
   ValueNotifier<String> password = ValueNotifier('');
   ValueNotifier<String> confirmPassword = ValueNotifier('');
 
+
+
+  ValueNotifier<String> messageErrorEmail = ValueNotifier('');
+  ValueNotifier<String> messageErrorPassword = ValueNotifier('');
   // final _user = TextEditingController();
   // final _email = TextEditingController();
   // final _password = TextEditingController();
@@ -65,7 +69,7 @@ class _RegisterViewState extends State<RegisterView> {
               // Inputs
               layoutView(size.width, size.height),
               // Boton
-              button(),
+              // button(),
               // Iniciar sesion
               finalText(context)
             ],
@@ -86,7 +90,7 @@ class _RegisterViewState extends State<RegisterView> {
           // Text Name
           texts('Nombre'),
           // TextFile Name Full
-          inputs('Nombre completo', height, name),
+          inputN('Nombre completo', height, name),
           // Text Addres
           texts('Correo electrónico'),
           // TextFile Addres
@@ -98,7 +102,7 @@ class _RegisterViewState extends State<RegisterView> {
           // Text Confirm Password
           texts('Confirmar contraseña'),
           // TextField Password
-          passwords('Confirmar contraseña', height, confirmPassword),
+          // passwords('Confirmar contraseña', height, confirmPassword),
           // Text Area
           texts('Delimitar área'),
           // Obtener coordenadas
@@ -138,67 +142,10 @@ class _RegisterViewState extends State<RegisterView> {
                       coords: [],
                       );
           Navigator.pushReplacementNamed(context, 'delimit',arguments: {'name':name,'email':gmail,'password':password});
-                  //mesirve
-                  // print('--------------------------------------');
-                  // print(name.value);
-                  // print(password.value);
-                  // GmailAndPaswordRegister register =GmailAndPaswordRegister();
-                  // register
-                  //     .registerEmailPassword(user)
-                  //     .then((value) {
-                  //   if (value != null) {
-                  //     if (value.code == 'email-already-in-use') {
-
-                  //       print('Correo electronico ya registrado');
-                  //     } else if (value.code == 'weak-password') {
-                  //     print('Contraseña muy corta');
-                  //     }
-                  //   } else {
-                  //     print('-----------------------------');
-                  //     print('usuario creado');
-                  //     // showModalRegistered(context);
-                  //     verifyUser();
-                  //   }
-                  // });
-
-
-         
 
 
         }:
         null,
-        // onPressed: () {
-        //   print(_user.text);
-        //   print(_email.text);
-        //   print(_password.text);
-        //   UserModel user = new UserModel(
-        //                           name: _user.text,
-        //                           email: _email.text,
-        //                           password: _password.text, 
-        //                           coords: [],
-        //                           );
-        //   print('--------------------------------------');
-        //   print(user);
-        //                       GmailAndPaswordRegister register =GmailAndPaswordRegister();
-        //                       register
-        //                           .registerEmailPassword(user)
-        //                           .then((value) {
-        //                         if (value != null) {
-        //                           if (value.code == 'email-already-in-use') {
-
-        //                                 print('Correo electronico ya registrado');
-        //                           } else if (value.code == 'weak-password') {
-        //                            print('Contraseña muy corta');
-        //                           }
-        //                         } else {
-        //                           // showModalRegistered(context);
-        //                           verifyUser();
-        //                         }
-        //                       });
-
-
-        //   Navigator.pushReplacementNamed(context, 'delimit');
-        // },
         child: const Text(
           'Delimirar área',
           style: TextStyle(
@@ -225,15 +172,19 @@ class _RegisterViewState extends State<RegisterView> {
       )
     );
   }
-
-  Container inputs (String nombre, double height, controllerV) {
+  Container inputN (String nombre, double height, controllerV) {
+   
     return Container(
       width: double.infinity,
       height: height * 0.1,
       margin: const EdgeInsets.only(top: 5),
-      child: TextField(
+      child: ValueListenableBuilder(
+        valueListenable:messageErrorEmail ,
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return  TextField(
         onChanged: (value) {
-            controllerV.value = value;
+                  controllerV.value = value;
+  
           },
         // controller: controllerV,
         decoration: InputDecoration(
@@ -244,24 +195,95 @@ class _RegisterViewState extends State<RegisterView> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
           ),
+        
           hintText: nombre,
         ),
+      );
+        },
+      ),
+    );
+  }
+  Container inputs (String nombre, double height, controllerV) {
+    String EMAIL_REGEX = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
+    return Container(
+      width: double.infinity,
+      height: height * 0.1,
+      margin: const EdgeInsets.only(top: 5),
+      child: ValueListenableBuilder(
+        valueListenable:messageErrorEmail ,
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return  TextField(
+        onChanged: (value) {
+                if (RegExp(EMAIL_REGEX).hasMatch(value)) {
+                  controllerV.value = value;
+                  messageErrorEmail.value = '';
+                } else {
+                  messageErrorEmail.value = 'Introduzca un correo valido';
+                }
+
+            
+          },
+        // controller: controllerV,
+        decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: const BorderSide(color: Colors.black),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          errorText: messageErrorEmail.value == ''
+                    ? null
+                    : messageErrorEmail.value,
+          hintText: nombre,
+        ),
+      );
+        },
       ),
     );
   }
 
   Widget passwords (String nombre, double height, password) {
+    const String passRegex1 = r"[a-z]";
+    const String passRegex2 = r"[A-Z]";
+    const String passRegex3 = r"[0-9]";
+    const String passRegex4 = r"[()+!.,;:$%=]";   
     return Container(
       width: double.infinity,
       height: height * 0.1,
       margin: const EdgeInsets.only(top: 5),
-      child: TextField(
+      child: ValueListenableBuilder<String>(
+        valueListenable:  messageErrorPassword,
+        builder: (BuildContext context, dynamic value, Widget? child) {
+          return TextField(
+        
         onChanged: (value) {
-            password.value = value;
+          // crear if anidados para cada uno de los valores, minusculas, mayusculas, numeros y caracteres especiales
+                if (RegExp(passRegex1).hasMatch(value)) {
+                  if(RegExp(passRegex2).hasMatch(value)){
+                    if(RegExp(passRegex3).hasMatch(value)){
+                      if(RegExp(passRegex4).hasMatch(value)){
+                        password.value= value;
+                        messageErrorPassword.value = '';
+                      }else{
+                        messageErrorPassword.value='La constraseña debe contener caracteres especiales';
+                      }
+                    }else{
+                      messageErrorPassword.value='La constraseña debe contener numeros';
+                    }
+                  }else{
+                    messageErrorPassword.value='La constraseña debe contener mayusculas';
+                  }
+                } else {
+                  messageErrorPassword.value='La constraseña debe contener minusculas';
+                }
           },
         // onChanged: (value) => setState(() => this.password = value),
         // onSubmitted: (value) => setState(() => this.password = value),
         decoration: InputDecoration(
+          errorText: messageErrorPassword.value == ''
+                    ? null
+                    : messageErrorPassword.value,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(color: Colors.black),
@@ -279,7 +301,11 @@ class _RegisterViewState extends State<RegisterView> {
           border: const OutlineInputBorder(),
         ),
         obscureText: isPasswordVisible,
+      );
+        },
       ),
+
+      
     );
   }
 

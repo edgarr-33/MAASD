@@ -40,6 +40,7 @@ class _DelimitAreaViewState extends State<DelimitAreaView> {
     ValueNotifier<String> name = arguments['name'];
     ValueNotifier<String> gmail = arguments['email'];
     ValueNotifier<String> password = arguments['password'];
+    print('-------------------${password.value}');
   
     return Scaffold(
       body: SafeArea(
@@ -72,8 +73,9 @@ class _DelimitAreaViewState extends State<DelimitAreaView> {
                         print('Posicion del marcador nuevo $position');  
                       });
                       print('Lista de marcadores $latlngs');
-                    }else{
-                      showDialog(
+
+                      if(ids==5){
+                         showDialog(
                         context: context,
                          builder: (context)=> AlertDialog(
                            title: const Text('Ha colocado todas sus posiciones'),
@@ -94,20 +96,10 @@ class _DelimitAreaViewState extends State<DelimitAreaView> {
                                 coords: latlngs,
                                 );
                                 print('--------------------------------------');
-                                print(name.value);
-                                print(password.value);
-                                print(gmail.value);
-                                print(latlngs.toString());
-                                // print([latlngs[0].latitude,latlngs[0].longitude]);
-                                // print(latlngs[1]);
-                                // print(latlngs[2]);
-                                // print(latlngs[3]);
-                                
-                                
-                                
+                          
 
-                              
                                 GmailAndPaswordRegister register =GmailAndPaswordRegister();
+                                print(user);
                                 register
                                     .registerEmailPassword(user)
                                     .then((value) {
@@ -129,45 +121,12 @@ class _DelimitAreaViewState extends State<DelimitAreaView> {
 
                             }:
                           null,
-
-
-
                         )
                            ],
                          )
                       );
-                     
-                  //     UserModel user =  UserModel(
-                  //     name: name.value,
-                  //     email: gmail.value,
-                  //     password: password.value, 
-                  //     coords: [],
-                  //     );
+                      }
 
-                  //     print('--------------------------------------');
-                  //     print(name.value);
-                  //     print(password.value);
-                  //     // print(latlngs);
-                  // GmailAndPaswordRegister register =GmailAndPaswordRegister();
-                  // register
-                  //     .registerEmailPassword(user)
-                  //     .then((value) {
-                  //   if (value != null) {
-                  //     if (value.code == 'email-already-in-use') {
-
-                  //       print('Correo electronico ya registrado');
-                  //     } else if (value.code == 'weak-password') {
-                  //     print('Contraseña muy corta');
-                  //     }
-                  //   } else {
-                  //     print('-----------------------------');
-                  //     print('usuario creado');
-                  //     showModalRegistered(context);
-                  //     verifyUser();
-                  //   }
-                  // });
-
-                      // print('Lista de marcadores $latlngs');
                     }
                   },
                   markers: markers.map((e) => e).toSet(),
@@ -181,6 +140,7 @@ class _DelimitAreaViewState extends State<DelimitAreaView> {
   }
      void verifyUser() {
     if (FirebaseAuth.instance.currentUser?.uid != null) {
+      print('click');
       Navigator.of(context).pushNamedAndRemoveUntil('InitialPage', (Route<dynamic> route) => false);
     }
   }

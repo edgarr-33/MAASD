@@ -2,16 +2,16 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_utils/utils/poly_utils.dart';
-
+import '../api/NotificationApi.dart';
 import '../providers/location_provider.dart';
 import '../providers/map_provider.dart';
-
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NuevoMonitor extends StatefulWidget {
 
@@ -22,16 +22,74 @@ class NuevoMonitor extends StatefulWidget {
 }
 
 class _NuevoMonitorState extends State<NuevoMonitor> {
-    final _location = LocationProvider();
+
+
+  late FlutterLocalNotificationsPlugin localNotification;
+  
+
+  void sendNotification({String? title, String? body})async{
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = 
+        FlutterLocalNotificationsPlugin();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const IOSInitializationSettings initializationSettingsIOS =
+        IOSInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true
+        );
+   
+   
+    const InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS,
+        );
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+        );
+
+    const AndroidNotificationChannel channel = AndroidNotificationChannel('high_chanel', 'high importance notification',
+      description:"thos channel is important fot notification",
+      importance: Importance.max );
+    
+    flutterLocalNotificationsPlugin.show(0, title, body, NotificationDetails(
+      android: AndroidNotificationDetails(channel.id, channel.name,channelDescription: channel.description)
+    ));
+
+  }
+
+
+  final _location = LocationProvider();
   final _controller = MapProvider();
-  final _initialCameraPosition = const CameraPosition(target: LatLng(16.615616682740654, -93.09023874839484), zoom: 16);
   final Set<Polygon> _polygons = HashSet<Polygon>();
 
   @override
   void initState() {
     _location.getLocation();
+    
     super.initState();
+    // var androidInitialize = const AndroidInitializationSettings('ic_launcher.png');
+    // var initializatiooonSettings = InitializationSettings(
+    //   android: androidInitialize
+    // );
+    // localNotification = FlutterLocalNotificationsPlugin();
+    // localNotification.initialize(initializatiooonSettings);
+  
   }
+
+// Future<void> _showNotification() async {
+//     const AndroidNotificationDetails androidPlatformChannelSpecifics =
+//         AndroidNotificationDetails('channelId', 'Local Notification',
+//             channelDescription: 'prueba de notificacion',
+//             importance: Importance.high
+//             );
+//     const NotificationDetails platformChannelSpecifics =
+//         NotificationDetails(android: androidPlatformChannelSpecifics);
+//     var generalNotificationDetails = new NotificationDetails(android: androidPlatformChannelSpecifics);
+    
+//     await localNotification.show(0, 'title', 'body', generalNotificationDetails);
+//   }
+
   // final String documentId;
   @override
   Widget build(BuildContext context) {
@@ -54,11 +112,15 @@ class _NuevoMonitorState extends State<NuevoMonitor> {
 
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+          String nameBD;
+          String gmailBD;
           List<dynamic> coords = [];
           List<double> latList=[];
           List<double> longList=[];
 
           coords.add(data['coords']);
+          nameBD=data['name'];
+          gmailBD=data['email'];
           // print(coords);
 
           for (var i = 0; i < coords[0].length; i++) {
@@ -73,12 +135,23 @@ class _NuevoMonitorState extends State<NuevoMonitor> {
           double width = MediaQuery.of(context).size.width;
           double height = MediaQuery.of(context).size.height;
           return Scaffold(
-            backgroundColor: const Color(0xffFFC9D9),
+            backgroundColor: const Color(0xff2196F3),
             appBar: AppBar(
-              backgroundColor: const Color(0xff9F7FB1),
+              backgroundColor: const Color(0xff2196F3),
               title: const Center(
                 child: Text('MonitorDem')
               ),
+              actions: [
+                ElevatedButton(onPressed: (){
+                  Navigator.pushReplacementNamed(context, 'edit',arguments: {'uid':identificador,'email':gmailBD,'name':nameBD});
+                }, 
+                child: const Icon(Icons.edit)),
+                ElevatedButton(onPressed: (){
+                  FirebaseAuth.instance.signOut();
+
+                  Navigator.pushNamed(context, 'InitialPage');
+                }, child: const Icon(Icons.power_settings_new_outlined ))
+              ],
             ),
             body: Container(
         color: null,
@@ -91,12 +164,10 @@ class _NuevoMonitorState extends State<NuevoMonitor> {
             double long = json['f_longitude'];
             final temp = json['f_temperature'];
             final bat = json['f_baterÃ­a'];
-            double tempAux = temp - 3.0;
             int frecInt = frec.toInt();
 
             getMarkers(lat, long);
-            print(latList);
-            print(longList);
+          
 
             setPolygon(
               1,
@@ -113,12 +184,19 @@ class _NuevoMonitorState extends State<NuevoMonitor> {
               Point(  latList[2],longList[2]),
               Point(  latList[3],longList[3]),
             ];
+            final _initialCameraPosition =  CameraPosition(target: LatLng( latList[0],longList[0]), zoom: 16);
             // Alerta de fuera del área
             bool contains = PolyUtils.containsLocationPoly(from, polygon);
+            
             if (!contains) {
-              
+              sendNotification(
+                              title: "Mensaje de alerta", 
+                              body: "La persona salio fuera del perimetro de seguridad"
+                            );
+                // _showNotification();
                 final DateTime now = DateTime.now();
                  return Dialog(
+                   
                   insetPadding: const EdgeInsets.only(top: 100),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4)
@@ -149,9 +227,14 @@ class _NuevoMonitorState extends State<NuevoMonitor> {
                     ],
                   ),
                 );
+                
             }
             // Alerta de temperatura
             if (temp > 38) {
+              sendNotification(
+                              title: "Mensaje de alerta",
+                              body: "La persona tiene la temperatura alta"
+                            );
               return Dialog(
                   insetPadding: const EdgeInsets.only(top: 100),
                   shape: RoundedRectangleBorder(
@@ -184,6 +267,47 @@ class _NuevoMonitorState extends State<NuevoMonitor> {
                   ),
                 );
             }
+             if (frecInt > 120) {
+              sendNotification(
+                              title: "Mensaje de alerta",
+                              body: "La persona tiene el ritmo cardiaco alto"
+                            );
+              return Dialog(
+                  insetPadding: const EdgeInsets.only(top: 100),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4)
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Container(
+                        height: 200,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 70, 10, 10),
+                          child: Column(
+                            children: const [ 
+                              Text('Ritmo cardiaco alto', style: TextStyle(fontSize: 20),),
+                            ],
+                          ),
+                        ) ,
+                      ),
+                    const Positioned(
+                      child: CircleAvatar(
+                        backgroundColor: Colors.redAccent,
+                        radius: 60,
+                        child: Icon(Icons.assistant_photo,size: 50,color:Colors.white,),
+                      ),
+                      top: -60,
+                      )
+                    ],
+                  ),
+                );
+            }
+
+
+
+
             // Diseño de la vista
             return Column(
               children: [
@@ -214,11 +338,12 @@ class _NuevoMonitorState extends State<NuevoMonitor> {
                       children: [
                         const Padding(padding: EdgeInsets.only(top: 30)),
                         Text(
-                          'Frecuencia: ${frec}',
+                          'Frecuencia: ${frecInt}',
                           style: const TextStyle(fontSize: 30),
                         ),
                         Text('Temperatura: ${temp}',
                             style: const TextStyle(fontSize: 30)),
+                      
                       ],
                     ),
                   ),
@@ -233,7 +358,7 @@ class _NuevoMonitorState extends State<NuevoMonitor> {
 
         }
  
-        return Text("loading");
+        return const SizedBox(child: Center(child: CircularProgressIndicator(),), width: 100, height:100 ,);
       },
       
     );

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:monitoreo/src/vistas/splash.dart';
 
 class Login extends StatefulWidget {
   
@@ -81,7 +80,7 @@ class login extends StatelessWidget {
             child: TextField(
               controller: _emailController,
               decoration: const InputDecoration(
-                labelText: 'Usuario',
+                labelText: 'Email',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -100,11 +99,30 @@ class login extends StatelessWidget {
               ),
             ),
           ),
-          Center(
-            child: Container(
-              child: ElevatedButton(
-                child: const Text('ingresar'),
-                onPressed: () async{
+           Container(
+               margin: const EdgeInsets.only(top: 30),
+                width: 300,
+                height: 48,
+                child:ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                        side: const BorderSide(color: Colors.black38),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)
+                          
+                        )
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: const[
+                          // Icon(Icons.email ,color:ColorSelect.txtBoSubHe),
+                          Text('Ingresar',
+                          style: TextStyle(fontSize: 14,color: Colors.black),  
+                        )
+                        ],
+        
+                      ),
+                      onPressed: () async{
                   User? user = await loginUsingEmailPassword(
                     email: _emailController.text, 
                     password: _passwordController.text, context: context);
@@ -114,10 +132,53 @@ class login extends StatelessWidget {
                     }
                   
                 },
-              ),
-            ),
-    
-    
+                    ),
+          ),
+          //  Container(
+              
+          //     child: ElevatedButton
+          //     (
+          //       child: const Text('ingresar'),
+          //       onPressed: () async{
+          //         User? user = await loginUsingEmailPassword(
+          //           email: _emailController.text, 
+          //           password: _passwordController.text, context: context);
+          //           print(user);
+          //           if(user!= null){
+          //              Navigator.pushReplacementNamed(context, 'mon',arguments: {'uid':identificador});
+          //           }
+                  
+          //       },
+          //     ),
+          //   ),
+          
+          Container(
+               margin: const EdgeInsets.only(top: 30),
+                width: 300,
+                height: 48,
+                child:ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue[100],
+                        side: const BorderSide(color: Colors.black38),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)
+                          
+                        )
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: const[
+                          // Icon(Icons.email ,color:ColorSelect.txtBoSubHe),
+                          Text('Recuperar contraseña',
+                          style: TextStyle(fontSize: 14,color: Colors.blueAccent),  
+                        )
+                        ],
+        
+                      ),
+                      onPressed: (){
+                        Navigator.pushNamed(context, 'reset');
+                      },
+                    ),
           ),
           Container(
                     margin: const EdgeInsets.only(top: 30),

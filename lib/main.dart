@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:monitoreo/src/vistas/MonitorDem.dart';
-import 'package:monitoreo/src/vistas/alert.dart';
-import 'package:monitoreo/src/vistas/continuar.dart';
+import 'package:monitoreo/src/vistas/EditCoords.dart';
+import 'package:monitoreo/src/vistas/ResetPasww.dart';
 import 'package:monitoreo/src/vistas/delimitArea.dart';
 import 'package:monitoreo/src/vistas/login.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:monitoreo/src/vistas/loginAuth.dart';
 import 'package:monitoreo/src/vistas/newMonitor.dart';
 import 'package:monitoreo/src/vistas/register.dart';
-import 'package:monitoreo/src/vistas/splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,15 +30,12 @@ class _MyAppState extends State<MyApp> {
       title: 'MVP Demo',
       initialRoute: 'InitialPage',
       routes: {
-        'InitialPage': (BuildContext context)=> const Login(),
-        'loginPage': (BuildContext context)=>  loginPage(),
+        'InitialPage': (BuildContext context)=> const Login(), //pagina principal
         'register': (BuildContext context) => const RegisterView(),
         'delimit': (BuildContext context) => const DelimitAreaView(),
-        'splash': (BuildContext context) => const SplashView(),
-        'monitor': (BuildContext context)=> const MonitorDem(),
-        'alerta': (BuildContext context)=> const Alerta(),
-        'continual': (BuildContext context)=>  Continuar(),
-        'mon': (BuildContext context)=>  NuevoMonitor(),
+        'mon': (BuildContext context)=>  const NuevoMonitor(),
+        'reset': (BuildContext context)=> ResetPass(),
+        'edit': (BuildContext context) => const EditDelimitAreaView(),
       },
     
     );
